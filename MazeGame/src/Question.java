@@ -1,3 +1,8 @@
+/**
+ * Question interface.
+ * @author Mylo
+ * @version 7.20.21
+ */
 
 public interface Question 
 {
