@@ -77,4 +77,13 @@ public class QuestionStack
         return false;
     }
     
+    /**
+     * Gets the size of the stack.
+     * @return Returns the size of the stack.
+     */
+    public int size()
+    {
+        return myStackTop + 1;
+    }
+    
 }

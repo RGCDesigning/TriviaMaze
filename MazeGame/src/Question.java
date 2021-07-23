@@ -1,7 +1,7 @@
 /**
  * Question interface.
  * @author Mylo
- * @version 7.20.21
+ * @version 7.18.21
  */
 
 public interface Question 
@@ -18,5 +18,12 @@ public interface Question
      * @return Returns the question's answer.
      */
     String getAnswer();
+    
+    /**
+     * Prints a readable version of readable version of the question and answer object.
+     * @return The readable version of the Q and A.
+     */
+    @Override
+    String toString();
     
 }

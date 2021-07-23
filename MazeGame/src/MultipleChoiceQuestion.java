@@ -17,9 +17,11 @@ public class MultipleChoiceQuestion implements Question
      */
     private int myAnswer; 
     
-    public MultipleChoiceQuestion()
+    public MultipleChoiceQuestion(final String theQuestion, final String[] theChoices, final int theAnswer)
     {
-        
+        myQuestion = theQuestion;
+        myChoices = theChoices;
+        myAnswer = theAnswer;
     }
     
     /**
@@ -55,6 +57,12 @@ public class MultipleChoiceQuestion implements Question
     public String getAnswer() 
     {
         return myChoices[myAnswer];
+    }
+    
+    @Override
+    public String toString()
+    {
+        return myQuestion + " \n\t" + myChoices[myAnswer];
     }
 
 }

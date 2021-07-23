@@ -1,3 +1,8 @@
+/**
+ * Short answer question object.
+ * @author Mylo
+ * @version 7.18.21
+ */
 
 public class ShortAnswer implements Question
 {
@@ -11,9 +16,10 @@ public class ShortAnswer implements Question
      */
     private String myAnswer;
     
-    public ShortAnswer()
+    public ShortAnswer(final String theQuestion, final String theAnswer)
     {
-        
+        myQuestion = theQuestion;
+        myAnswer = theAnswer;
     }
     
     /**
@@ -40,6 +46,12 @@ public class ShortAnswer implements Question
     public String getAnswer() 
     {
         return myAnswer;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return myQuestion + " \n\t" + myAnswer;
     }
     
 }

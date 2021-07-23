@@ -12,9 +12,10 @@ public class TFQuestion implements Question
      */
     private boolean myAnswer; 
     
-    public TFQuestion()
+    public TFQuestion(final String theQuestion, final boolean theAnswer)
     {
-        
+        myQuestion = theQuestion;
+        myAnswer = theAnswer;
     }
     
     /**
@@ -45,6 +46,12 @@ public class TFQuestion implements Question
             return "True";
         }
         return "False";
+    }
+    
+    @Override
+    public String toString()
+    {
+        return myQuestion + " \n\t" + myAnswer;
     }
 
 }
