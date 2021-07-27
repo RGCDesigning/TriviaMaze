@@ -6,110 +6,116 @@ public class Graph
      * 
      */
     private boolean[][] myMatrix;
-    
+
     /**
      * 
      */
     private int[][] myGrid;
-    
-    public ArrayList<ArrayList<Boolean>> adjMatrix;
-    
-    public int vertices;
-    
+
+    /**
+     * 
+     */
+    private ArrayList<ArrayList<Boolean>> myAdjMatrix;
+
+    /**
+     * 
+     */
+    private int myVertices;
+
     public Graph()
     {
-        adjMatrix = new ArrayList<ArrayList<Boolean>>();
-        vertices = 0;
+        myAdjMatrix = new ArrayList<ArrayList<Boolean>>();
+        myVertices = 0;
     }
-    
+
     public void graphInfo()
     {
-        System.out.println("Vertices:\t" + vertices);
-        System.out.println("AdjIndexes:\t" + adjMatrix.size() + " x " + adjMatrix.get(0).size());
-//        printGrid();
+        System.out.println("Vertices:\t" + myVertices);
+        System.out.println("AdjIndexes:\t" + myAdjMatrix.size() + " x " + myAdjMatrix.get(0).size());
+        //        printGrid();
     }
-    
-    public ArrayList<Integer> getConnections(int id)
+
+    public ArrayList<Integer> getConnections(final int theId)
     {
-    	ArrayList<Integer> connections = new ArrayList<Integer>();
-    	//Check North
-    	for(int i = 0; i < adjMatrix.get(id).size(); i++)
-    	{
-    		if(adjMatrix.get(id).get(i))
-    		{
-    			connections.add(i);
-    		}
-    	}
-    	return connections;
+        final ArrayList<Integer> connections = new ArrayList<Integer>();
+        //Check North
+        for (int i = 0; i < myAdjMatrix.get(theId).size(); i++)
+        {
+            if  (myAdjMatrix.get(theId).get(i))
+            {
+                connections.add(i);
+            }
+        }
+        return connections;
     }
-    
-    public void addEdge(int idA, int idB)
+
+    public void addEdge(final int theIdA, final int theIdB)
     {
-        adjMatrix.get(idA).set(idB, true);
-        adjMatrix.get(idB).set(idA, true);
+        myAdjMatrix.get(theIdA).set(theIdB, true);
+        myAdjMatrix.get(theIdB).set(theIdA, true);
     }
-    
-    public boolean isConnected(int idA, int idB)
+
+    public boolean isConnected(final int theIdA, final int theIdB)
     {
-        return adjMatrix.get(idA).get(idB);
+        return myAdjMatrix.get(theIdA).get(theIdB);
     }
-    
+
     public void addVertice()
     {
-        ArrayList<Boolean> tempArray = new ArrayList<Boolean>();
-        for(int i = 0; i < vertices; i++)
+        final ArrayList<Boolean> tempArray = new ArrayList<Boolean>();
+        for (int i = 0; i < myVertices; i++)
         {
             tempArray.add(false);
         }
-        adjMatrix.add(tempArray);
-        
-        vertices++;
-        
-        for(ArrayList<Boolean> x : adjMatrix)
+        myAdjMatrix.add(tempArray);
+
+        myVertices++;
+
+        for (ArrayList<Boolean> x : myAdjMatrix)
         {
             x.add(false);
         }
     }
-    
+
     public void printGrid()
     {
-        for(ArrayList<Boolean> x : adjMatrix)
+        for (ArrayList<Boolean> x : myAdjMatrix)
         {
-            for(boolean y : x)
+            for (boolean y : x)
             {
                 System.out.print(y ? "1 " : "0 ");
             }
             System.out.println();
         }
     }
-    
+
     class Node
     {
         /**
          * 
          */
         private Node myNorth;
-        
+
         /**
          * 
          */
         private Node mySouth;
-        
+
         /**
          * 
          */
         private Node myEast;
-        
+
         /**
          * 
          */
         private Node myWest;
-        
+
         /**
          * 
          */
         private String mySymbol;
-        
+
         Node()
         {
             myNorth = null;
@@ -118,7 +124,7 @@ public class Graph
             myWest = null;
             mySymbol = " ";
         }
-        
+
         public ArrayList<Node> getNeighbors()
         {
             final ArrayList<Node> nodes = new ArrayList<Node>();
@@ -140,12 +146,12 @@ public class Graph
             }
             return nodes;
         }
-        
+
         public String toString()
         {
             return mySymbol;
         }
-        
+
     }
-    
+
 }
