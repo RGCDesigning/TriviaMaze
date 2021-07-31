@@ -49,6 +49,25 @@ public class Map
         setupMap();
     }
     
+    public void translatePos(final int theRow, final int theCol)
+    {
+        System.out.println((theRow * 2 + 1) + ", " + (theCol * 2 + 1));
+    }
+    
+    public void unlockDoor(final int theRow, final int theCol)
+    {
+        System.out.println("Attempting unlock at " + new Coordinate(theRow, theCol));
+        
+        if (myMap[theRow][theCol].getNodeType() == MapNodeType.DOOR)
+        {
+            System.out.println("Unlocked!");
+            myMap[theRow][theCol].setNodeType(MapNodeType.OPENED_DOOR);
+        }
+        
+    }
+    
+    
+    
     /**
      * Initializes the setup for the array.
      */

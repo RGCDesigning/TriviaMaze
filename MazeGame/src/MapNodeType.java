@@ -4,7 +4,7 @@ public enum MapNodeType
     /**
      * The types of passage ways in the MapNode.
      */
-    HALLWAY(' '), WALL('#'), DOOR('D'), ENTRANCE('O'), EXIT('X'), VISITED('V');
+    HALLWAY(' '), WALL('#'), DOOR('D'), OPENED_DOOR('d'), ENTRANCE('O'), EXIT('X'), VISITED('V');
     
     /**
      * The symbol that is printed in the console.
