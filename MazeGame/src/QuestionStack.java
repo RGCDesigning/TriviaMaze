@@ -1,3 +1,8 @@
+/**
+ * Question Stack.
+ * @author Mylo
+ * @version 7.18.21
+ */
 
 public class QuestionStack 
 {

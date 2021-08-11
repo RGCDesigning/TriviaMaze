@@ -1,41 +1,47 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The Map class.
+ * @author r3mix
+ * @version 7.31.21
+ */
+
 public class Map 
 {
     
     /**
-     * 
+     * The difficulty of the game. Controls the spawn rate of doors.
      */
-    private static final double DIFFICULTY = 0.30;
+    private static final double DIFFICULTY = 0.4;
     
     /**
-     * 
+     * The percent chance that a door will spawn when a wall is opened.
      */
-    private static final double DOORCHANCE = 0.50;
+    private static final double DOORCHANCE = 0.5;
     
     /**
-     * 
+     * The rows in the map.
      */
     private final int myRows;
     
     /**
-     * 
+     * The columns in the map.
      */
     private final int myCols;
     
     /**
-     * 
+     * The actual rows of the map's array.
      */
     private final int myRowBound;
     
     /**
-     * 
+     * The actual columns of the map's array.
      */
     private final int myColBound;
     
     /**
-     * 
+     * The 2D array of MapNodes that represents the map itself.
      */
     private final MapNode[][] myMap;
     
@@ -49,11 +55,21 @@ public class Map
         setupMap();
     }
     
+    /**
+     * 
+     * @param theRow
+     * @param theCol
+     */
     public void translatePos(final int theRow, final int theCol)
     {
         System.out.println((theRow * 2 + 1) + ", " + (theCol * 2 + 1));
     }
     
+    /**
+     * 
+     * @param theRow
+     * @param theCol
+     */
     public void unlockDoor(final int theRow, final int theCol)
     {
         System.out.println("Attempting unlock at " + new Coordinate(theRow, theCol));
@@ -73,16 +89,24 @@ public class Map
      */
     private void setupMap()
     {
+        //Sets up map, pads sides
         setupInitialWalls();
         
+        //Generates a path from top left to bottom right using DFS
         setupGeneratePath(1, 1);
         
+        //Sets the entrance and exit. Can be randomized for added difficulty
         setupEntranceExit();
         
+        //Clears out the PLAY ACCESSIBLE spots. These are spots that can be used for items/powerups if time permits.
         setupClearRooms();
         
+        //Follows path from DFS and randomly sets doors or walkways depending on difficulty
         setupSetDoors(DIFFICULTY);
         
+        //Runs through each non-corner and punches a hole depending on difficulty and door chance
+        //Difficulty decides if the wall will be replaced -> Lowers difficulty
+        //Door chance decides what it will be replaced with -> Raises OR lowers difficulty
         setupPunchHoles(DIFFICULTY, DOORCHANCE);
     }
     
@@ -202,6 +226,8 @@ public class Map
      */
     private void setupExtendNode(final int theRow, final int theCol)
     {
+        //Is this long method okay?
+        
         final ArrayList<Directions> extendableDirections = new ArrayList<Directions>();
         
         if (setupTryPathNorth(theRow, theCol))
@@ -331,6 +357,24 @@ public class Map
             }
             System.out.println();
         }
+    }
+    
+    /**
+     * Gets the rows for the map.
+     * @return The rows for the map.
+     */
+    public int getMyRows()
+    {
+        return myRows;
+    }
+    
+    /**
+     * Sets the rows for the map.
+     * @return The columns for the map.
+     */
+    public int getMyCols()
+    {
+        return myCols;
     }
     
 }

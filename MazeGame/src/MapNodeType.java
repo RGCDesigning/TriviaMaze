@@ -1,10 +1,45 @@
-
+/**
+ * 
+ * @author r3mix
+ * @version 8.1.21
+ */
 public enum MapNodeType
 {
     /**
-     * The types of passage ways in the MapNode.
+     * Represents a clear passage way.
      */
-    HALLWAY(' '), WALL('#'), DOOR('D'), OPENED_DOOR('d'), ENTRANCE('O'), EXIT('X'), VISITED('V');
+    HALLWAY(' '), 
+    
+    /**
+     * Represents a blocked passage or wall.
+     */
+    WALL('#'), 
+    
+    /**
+     * Represents a question space that is closed.
+     */
+    DOOR('D'), 
+    
+    /**
+     * Represents a question space that is now open.
+     */
+    OPENED_DOOR('d'), 
+    
+    /**
+     * Represents the start of the map.
+     */
+    ENTRANCE('O'), 
+    
+    /**
+     * Represents the end of the map.
+     */
+    EXIT('X'), 
+    
+    /**
+     * Represents a visited position during generation.
+     * Can also be used to trace path during gameplay.
+     */
+    VISITED('V');
     
     /**
      * The symbol that is printed in the console.

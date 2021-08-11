@@ -1,3 +1,8 @@
+/**
+ * Multiple choice question object.
+ * @author Mylo
+ * @version 7.18.21
+ */
 
 public class MultipleChoiceQuestion implements Question
 {
@@ -10,12 +15,12 @@ public class MultipleChoiceQuestion implements Question
     /**
      * Stores the Question.
      */
-    private String myQuestion;
+    private final String myQuestion;
     
     /**
      * Stores the answer to the question as an integer.
      */
-    private int myAnswer; 
+    private final int myAnswer; 
     
     public MultipleChoiceQuestion(final String theQuestion, final String[] theChoices, final int theAnswer)
     {
@@ -31,6 +36,7 @@ public class MultipleChoiceQuestion implements Question
      */
     public boolean verifyAnswer(final int theInput)
     {
+        //one line return
         if (theInput == myAnswer)
         {
             return true;

@@ -7,12 +7,12 @@
 public class ShortAnswer implements Question
 {
     /**
-     * 
+     * Stores the question.
      */
     private String myQuestion;
     
     /**
-     * 
+     * Stores the answer.
      */
     private String myAnswer;
     
@@ -29,6 +29,7 @@ public class ShortAnswer implements Question
      */
     boolean verifyAnswer(final String theInput)
     {
+        //one line return
         if (theInput.equals(myAnswer))
         {
             return true;

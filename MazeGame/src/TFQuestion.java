@@ -1,3 +1,8 @@
+/**
+ * True false question object.
+ * @author Mylo
+ * @version 7.18.21
+ */
 
 public class TFQuestion implements Question
 {
