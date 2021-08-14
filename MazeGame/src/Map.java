@@ -4,7 +4,7 @@ import java.util.Collections;
 /**
  * The Map class.
  * @author r3mix
- * @version 7.31.21
+ * @version 8.14.21
  */
 
 public class Map 
@@ -45,6 +45,11 @@ public class Map
      */
     private final MapNode[][] myMap;
     
+    /**
+     * Stores the current node the player is in.
+     */
+    private MapNode playerPos;
+    
     public Map(final int theRowDimensions, final int theColumnsDimensions)
     {
         myRows = theRowDimensions;
@@ -53,6 +58,8 @@ public class Map
         myColBound = theColumnsDimensions * 2 + 1;
         myMap = new MapNode[myRowBound][myColBound];
         setupMap();
+        myMap[1][1].setPlayerPresent(true);
+        playerPos = myMap[1][1];
     }
     
     /**
@@ -82,6 +89,157 @@ public class Map
         
     }
     
+    public void unlockDoor(final Directions theDirection)
+    {
+        if (theDirection == Directions.NORTH)
+        {
+            unlockDoor(playerPos.getCoordinate().myX - 1, playerPos.getCoordinate().myY);
+        }
+        else if (theDirection == Directions.SOUTH)
+        {
+            unlockDoor(playerPos.getCoordinate().myX + 1, playerPos.getCoordinate().myY);
+        }
+        else if (theDirection == Directions.WEST)
+        {
+            unlockDoor(playerPos.getCoordinate().myX, playerPos.getCoordinate().myY - 1);
+        }
+        else if (theDirection == Directions.EAST)
+        {
+            unlockDoor(playerPos.getCoordinate().myX, playerPos.getCoordinate().myY + 1);
+        }
+    }
+    
+    
+    
+    /**
+     * Locks the door at a given position.
+     * @param theRow The row to lock.
+     * @param theCol The column to lock.
+     */
+    public void lockDoor(final int theRow, final int theCol)
+    {
+        System.out.println("Attempting lock at " + new Coordinate(theRow, theCol));
+        
+        if (myMap[theRow][theCol].getNodeType() == MapNodeType.DOOR)
+        {
+            System.out.println("Locked!");
+            myMap[theRow][theCol].setNodeType(MapNodeType.WALL);
+        }
+        
+    }
+    
+    /**
+     * Wrapper for lockDoor method.
+     * @param theCoordinate The coordinate to lock.
+     */
+    public void lockDoor(final Coordinate theCoordinate)
+    {
+        lockDoor(theCoordinate.myX, theCoordinate.myY);
+    }
+    
+    /**
+     * Attemps to move the player in a specified direction/
+     * @param theDirection The direction of the move.
+     * @return Whether or not the move was successful.
+     */
+    public boolean movePlayer(final Directions theDirection)
+    {
+        MapNode passage = getPassage(playerPos.getCoordinate(), theDirection);
+        
+        if (passage == null || passage.getNodeType() == MapNodeType.DOOR || passage.getNodeType() == MapNodeType.WALL)
+        {
+            return false;
+        }
+        
+        MapNode nextPos = getRoom(playerPos.getCoordinate(), theDirection);
+        
+        playerPos.setPlayerPresent(false);
+        
+        nextPos.setPlayerPresent(true);
+        
+        playerPos = nextPos;
+        
+        return true;
+        
+    }
+    
+    public MapNode getRoom(final int theRow, final int theCol, final Directions theDirection)
+    {
+        if (theRow < 1 || theRow > myRowBound - 1 || theCol < 1 || theCol > myColBound - 1)
+        {
+            return null;
+        }
+        
+        if (theDirection == Directions.NORTH && theRow > 0)
+        {
+            return myMap[theRow - 2][theCol];
+        }
+        else if (theDirection == Directions.SOUTH && theRow < myRowBound)
+        {
+            return myMap[theRow + 2][theCol];
+        }
+        else if (theDirection == Directions.WEST && theCol > 0)
+        {
+            return myMap[theRow][theCol - 2];
+        }
+        else if (theDirection == Directions.EAST && theCol < myColBound)
+        {
+            return myMap[theRow][theCol + 2];
+        }
+        
+        return null;
+    }
+    
+    public MapNode getRoom(final Coordinate theCoordinate, final Directions theDirection)
+    {
+        return getRoom(theCoordinate.myX, theCoordinate.myY, theDirection);
+    }
+    
+    /**
+     * Gets the passage that is in theDirection.
+     * @param theRow The current row to check.
+     * @param theCol The current column to check.
+     * @param theDirection The direction to check in.
+     * @return Returns the node at that position.
+     */
+    public MapNode getPassage(final int theRow, final int theCol, final Directions theDirection)
+    {
+        if (theRow < 0 || theRow > myRowBound || theCol < 0 || theCol > myColBound)
+        {
+            return null;
+        }
+        
+        if (theDirection == Directions.NORTH && theRow > 0)
+        {
+            return myMap[theRow - 1][theCol];
+        }
+        else if (theDirection == Directions.SOUTH && theRow < myRowBound)
+        {
+            return myMap[theRow + 1][theCol];
+        }
+        else if (theDirection == Directions.WEST && theCol > 0)
+        {
+            return myMap[theRow][theCol - 1];
+        }
+        else if (theDirection == Directions.EAST && theCol < myColBound)
+        {
+            return myMap[theRow][theCol + 1];
+        }
+        
+        return null;
+        
+    }
+    
+    /**
+     * Gets the passage that is in theDirection.
+     * @param theCoordinate The row and column to check from.
+     * @param theDirection The direction to check in.
+     * @return Returns the node at that position.
+     */
+    public MapNode getPassage(final Coordinate theCoordinate, final Directions theDirection)
+    {
+        return getPassage(theCoordinate.myX, theCoordinate.myY, theDirection);
+    }
     
     
     /**
@@ -119,7 +277,7 @@ public class Map
         {
             for (int j = 0; j < myColBound; j++)
             {
-                myMap[i][j] = new MapNode(MapNodeType.WALL);
+                myMap[i][j] = new MapNode(MapNodeType.WALL, new Coordinate(i, j));
             }
         }
     }
@@ -357,6 +515,16 @@ public class Map
             }
             System.out.println();
         }
+        
+    }
+    
+    /**
+     * Gets the player position as a node.
+     * @return Returns the player position as a node.
+     */
+    public MapNode getPlayerPos()
+    {
+        return playerPos;
     }
     
     /**

@@ -1,7 +1,7 @@
 /**
- * 
+ * The MapNodeType enum.
  * @author r3mix
- * @version 8.1.21
+ * @version 8.14.21
  */
 public enum MapNodeType
 {

@@ -3,7 +3,7 @@ import java.util.Scanner;
 /**
  * The Game class.
  * @author r3mix
- * @version 7.30.21
+ * @version 8.14.21
  */
 
 public class Game
@@ -49,6 +49,9 @@ public class Game
         
         while (playing)
         {
+            
+            myMap.debugPrint();
+            
             System.out.println("Input move:");
             
             final String[] input = reader.nextLine().split(" ");
@@ -70,20 +73,43 @@ public class Game
             {
                 if (input[1].contains("up"))
                 {
-                    
+                    myMap.movePlayer(Directions.NORTH);
                 }
                 else if (input[1].contains("down"))
                 {
-                    
+                    myMap.movePlayer(Directions.SOUTH);
                 }
                 else if (input[1].contains("left"))
                 {
-                    
+                    myMap.movePlayer(Directions.WEST);
                 }
                 else if (input[1].contains("right"))
                 {
-                    
+                    myMap.movePlayer(Directions.EAST);
                 }
+            }
+            else if (command.contains("unlock") && modifiers == 1)
+            {
+                if (input[1].contains("up"))
+                {
+                    myMap.unlockDoor(Directions.NORTH);
+                }
+                else if (input[1].contains("down"))
+                {
+                    myMap.unlockDoor(Directions.SOUTH);
+                }
+                else if (input[1].contains("left"))
+                {
+                    myMap.unlockDoor(Directions.WEST);
+                }
+                else if (input[1].contains("right"))
+                {
+                    myMap.unlockDoor(Directions.EAST);
+                }
+            }
+            else
+            {
+                System.out.println("Invalid move!");
             }
             
         }

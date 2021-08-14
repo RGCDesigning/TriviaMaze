@@ -1,4 +1,10 @@
 
+/**
+ * The MapNode class.
+ * @author r3mix
+ * @version 8.14.21
+ */
+
 public class MapNode 
 {
     
@@ -7,9 +13,20 @@ public class MapNode
      */
     private MapNodeType myNodeType;
     
-    MapNode(final MapNodeType theNodeType)
+    /**
+     * Stores the node's coordinates
+     */
+    private Coordinate myCoordinate;
+    
+    /**
+     * Stores whether or not this node contains the player.
+     */
+    private boolean isPlayerPos;
+    
+    MapNode(final MapNodeType theNodeType, final Coordinate theCoordinate)
     {
         myNodeType = theNodeType;
+        myCoordinate = theCoordinate;
     }
     
     /**
@@ -30,8 +47,39 @@ public class MapNode
         return myNodeType;
     }
     
+    /**
+     * Gets the node's coordinate.
+     * @return Returns the coordinate attached to this Node.
+     */
+    public Coordinate getCoordinate()
+    {
+        return myCoordinate;
+    }
+    
+    /**
+     * Gets whether or not the player is present on given node.
+     * @return Returns whether or not the player is present.
+     */
+    protected boolean isPlayerPresent()
+    {
+        return isPlayerPos;
+    }
+    
+    /**
+     * Sets whether or not the player is on node.
+     */
+    protected void setPlayerPresent(final boolean theSetting)
+    {
+        isPlayerPos = theSetting;
+    }
+    
+    @Override
     public String toString()
     {
+        if (isPlayerPos)
+        {
+            return "&" + "";
+        }
         return myNodeType.getSymbol() + "";
     }
     
