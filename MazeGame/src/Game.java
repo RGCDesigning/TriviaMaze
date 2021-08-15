@@ -1,5 +1,10 @@
 import java.util.Scanner;
 
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
 /**
  * The Game class.
  * @author r3mix
@@ -29,16 +34,38 @@ public class Game
      */
     private int myPlayerY;
     
-    public Game(final int theRows, final int theCols, final double theDifficulty)
+    public Game(final int theRows, final int theCols, final double theDifficulty, final QuestionStack theQuestions)
     {
+        myQuestions = theQuestions;
         myMap = new Map(theRows, theCols);
-        myPlayerX = 0;
-        myPlayerY = 0;
+        myPlayerX = 1;
+        myPlayerY = 1;
     }
     
-    public void setupGame()
+    public Coordinate getPlayerPos()
     {
-        
+        return myMap.getPlayerPos().getCoordinate();
+    }
+    
+    public Question getQuestion()
+    {
+        return myQuestions.pop();
+    }
+    
+    public boolean movePlayer(final Directions theDirections)
+    {
+        return myMap.movePlayer(theDirections);
+    }
+    
+    public boolean isDoor(final Directions theDirections)
+    {
+        System.out.println(myMap.getPassage(getPlayerPos(), theDirections));
+        return myMap.getPassage(getPlayerPos(), theDirections).getNodeType() == MapNodeType.DOOR;
+    }
+    
+    public void printBoard()
+    {
+        myMap.debugPrint();
     }
     
     public void playGame()
@@ -49,6 +76,9 @@ public class Game
         
         while (playing)
         {
+            
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
             
             myMap.debugPrint();
             
@@ -114,4 +144,5 @@ public class Game
             
         }
     }
+
 }

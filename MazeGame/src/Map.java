@@ -226,6 +226,8 @@ public class Map
             return myMap[theRow][theCol + 1];
         }
         
+        System.out.println(theRow + ", " + theCol);
+        
         return null;
         
     }

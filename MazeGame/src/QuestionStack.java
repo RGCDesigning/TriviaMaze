@@ -44,6 +44,8 @@ public class QuestionStack
      */
     public Question pop()
     {
+        if (isEmpty())
+            return null;
         return myQuestionStack[myStackTop--];
     }
     
