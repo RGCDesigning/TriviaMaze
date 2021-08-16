@@ -20,11 +20,22 @@ public class Main
     
     public static Question currentQuestion = null;
     
+    public static MapNode currentInteraction = null;
+    
+    public static Coordinate lastPlayerPos = null;
+    
     public static void main(final String[] theArgs)
     {
         final Question testQuestion = new MultipleChoiceQuestion("This is a test question", new String[] {"These", "Are", "Test", "Answers"}, 3);
+        
+        final Question t2 = new ShortAnswer("The answer is yes", "yes");
+        
+        final Question t3 = new TFQuestion("The answer is false", false);
+        
         final QuestionStack testStack = new QuestionStack(100);
         testStack.push(testQuestion);
+        testStack.push(t2);
+        testStack.push(t3);
         
         final Game testGame = new Game(4, 6, .5, testStack);
         
@@ -52,36 +63,127 @@ public class Main
         
         boolean playing = true;
         
+        boolean updateScreen = true;
+        
         while (playing)
         {
-                        
-            if (GlobalKeyListenerA.readyToRead == false)
+            
+            /**
+             * Updates screen when necessary
+             */
+            if (updateScreen)
             {
                 resetScreen();
+                                
+                if (myScreenType == 0)
+                {
+                    theGame.printBoard();
+                    
+                }
+                else if (myScreenType == 1)
+                {
+                    theGame.printBoard();
+                    System.out.println();
+                    printQuestion(currentQuestion);
+                    
+                    if (currentQuestion instanceof ShortAnswer)
+                    {
+                        String answer = getUserTextInput();
+                        
+                        theGame.setDoor(currentInteraction.getCoordinate(), verifyAnswer(answer));
+                        
+//                        System.out.println("Setting pos to " + lastPlayerPos);
+//                        
+//                        theGame.setPlayerPos(lastPlayerPos);
+                        
+                        myScreenType = 0;
+                        
+                        continue;
+                    }
+                    
+                    
+                    
+                }
+                else if (myScreenType == 2)
+                {
+                    
+                }
+                
+                updateScreen = false;
+                
+            }
+            
+            /**
+             * Reads input when input waiting
+             */
+            if (GlobalKeyListenerA.readyToRead)
+            {
+                
+                Directions direction = GlobalKeyListenerA.nextDirection;
+                
+                lastPlayerPos = theGame.getPlayerPos();
                 
                 if (myScreenType == 0)
                 {
-                    Directions direction = GlobalKeyListenerA.nextDirection;
-                    
-                    System.out.println(theGame.isDoor(direction));
-                    
                     boolean successfulMove = theGame.movePlayer(direction);
                     
-                    System.out.println("Move Success: " + successfulMove);
-                    
-                    if (!successfulMove)
+                    if (!successfulMove && theGame.isDoor(direction))
                     {
-                        
-                        System.out.println("Asking question");
                         currentQuestion = theGame.getQuestion();
-//                        myScreenType = 1;
+                        currentInteraction = theGame.getDoor(direction);
+                        myScreenType = 1;
                     }
-                                  
-                    theGame.printBoard();
                     
-                    GlobalKeyListenerA.readyToRead = true;
-                    GlobalKeyListenerA.nextDirection = null;
                 }
+                else if (myScreenType == 1)
+                {
+                    if (direction == Directions.NORTH)
+                    {
+                        myCurrentlySelected--;
+                    }
+                    else if (direction == Directions.SOUTH)
+                    {
+                        myCurrentlySelected++;
+                    }
+                    else if (direction == Directions.EAST)
+                    {              
+                        
+                        String answer = null;
+                        
+                        if (currentQuestion instanceof MultipleChoiceQuestion)
+                        {
+                            answer = ((MultipleChoiceQuestion) currentQuestion).getChoices()[myCurrentlySelected];
+                        }
+                        else if (currentQuestion instanceof TFQuestion)
+                        {
+                            if (myCurrentlySelected == 0)
+                            {
+                                answer = "true";
+                            }
+                            else
+                            {
+                                answer = "false";
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        
+                        theGame.setDoor(currentInteraction.getCoordinate(), verifyAnswer(answer));
+                        
+                        myScreenType = 0;
+                        
+                    }
+                }
+                else if (myScreenType == 2)
+                {
+                    
+                }
+                
+                updateScreen = true;
+                GlobalKeyListenerA.readyToRead = false;
+                GlobalKeyListenerA.nextDirection = null;
                 
             }
             else
@@ -89,12 +191,27 @@ public class Main
                 try
                 {
                     Thread.currentThread().sleep(myTimeout);
-                } catch (InterruptedException e)
+                } 
+                catch (InterruptedException e)
                 {
                     e.printStackTrace();
                 }
             }
+            
+            
+            
                         
+        }
+        
+        return false;
+    }
+    
+    public static boolean verifyAnswer(final String theInput)
+    {
+        
+        if (currentQuestion.getAnswer().equalsIgnoreCase(theInput))
+        {
+            return true;
         }
         
         return false;
@@ -106,6 +223,11 @@ public class Main
         
         while (true)
         {
+            if (!reader.hasNextLine())
+            {
+                continue;
+            }
+            
             String input = reader.nextLine();
             
             if (input != null && input.length() > 0)
@@ -123,11 +245,6 @@ public class Main
     {
         System.out.print("\033[H\033[2J");
         System.out.flush();
-    }
-    
-    public static void printMaze()
-    {
-        
     }
     
     public static void printMenu(final String[] theMenuItems)
@@ -181,7 +298,7 @@ public class Main
     
     private static void printShortAnswer(final ShortAnswer theQuestion)
     {
-        System.out.print("->\t");
+        System.out.print("\t->");
     }
     
     private static void printTFQuestion(final TFQuestion theQuestion)

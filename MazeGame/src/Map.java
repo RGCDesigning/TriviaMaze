@@ -89,6 +89,11 @@ public class Map
         
     }
     
+    public void unlockDoor(final Coordinate theCord)
+    {
+        unlockDoor(theCord.myX, theCord.myY);
+    }
+    
     public void unlockDoor(final Directions theDirection)
     {
         if (theDirection == Directions.NORTH)
@@ -160,6 +165,28 @@ public class Map
         playerPos = nextPos;
         
         return true;
+        
+    }
+    
+    public void movePlayerToRoom(final Coordinate theCord)
+    {
+        playerPos.setPlayerPresent(false);
+        playerPos = getRoom(theCord.myX, theCord.myY);
+        playerPos.setPlayerPresent(true);
+    }
+    
+    public MapNode getRoom(final int theRow, final int theCol)
+    {
+        
+        /** 
+         * Maybe check if odd?
+         */
+        if (theRow < 1 || theRow > myRowBound - 1 || theCol < 1 || theCol > myColBound- 1) 
+        {
+            return null;
+        }
+        
+        return myMap[theRow][theCol];
         
     }
     

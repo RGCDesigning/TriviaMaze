@@ -42,6 +42,34 @@ public class Game
         myPlayerY = 1;
     }
     
+    public void setDoor(final Coordinate theDoor, final boolean isUnlocked)
+    {
+        if (isUnlocked)
+        {
+            myMap.unlockDoor(theDoor);
+        }
+        else
+        {
+            myMap.lockDoor(theDoor);
+        }
+    }
+    
+    public MapNode getDoor(final Directions theDirections)
+    {
+        
+        if (myMap.getPassage(getPlayerPos(), theDirections).getNodeType() == MapNodeType.DOOR)
+        {
+            return myMap.getPassage(getPlayerPos(), theDirections);
+        }
+        
+        return null;
+    }
+    
+    public void setPlayerPos(final Coordinate theCord)
+    {
+        myMap.movePlayerToRoom(theCord);
+    }
+    
     public Coordinate getPlayerPos()
     {
         return myMap.getPlayerPos().getCoordinate();
@@ -54,6 +82,7 @@ public class Game
     
     public boolean movePlayer(final Directions theDirections)
     {
+        System.out.println("Moving player - " + theDirections);
         return myMap.movePlayer(theDirections);
     }
     

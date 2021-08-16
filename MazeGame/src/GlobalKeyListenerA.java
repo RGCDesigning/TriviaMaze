@@ -4,7 +4,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 public class GlobalKeyListenerA implements NativeKeyListener
 {
 
-    public static boolean readyToRead = true;
+    public static boolean readyToRead = false;
     
     public static Directions nextDirection = null;
     
@@ -12,7 +12,7 @@ public class GlobalKeyListenerA implements NativeKeyListener
     public void nativeKeyPressed(NativeKeyEvent k)
     {
         
-        if (readyToRead && nextDirection == null)
+        if (!readyToRead && nextDirection == null)
         {
 //            String key = k.getKeyText(k.getKeyCode());
             
@@ -21,28 +21,28 @@ public class GlobalKeyListenerA implements NativeKeyListener
             if (keyCode == NativeKeyEvent.VC_LEFT)
             {
                 nextDirection = Directions.WEST;
-                readyToRead = false;
+                readyToRead = true;
             }
             else if (keyCode == NativeKeyEvent.VC_RIGHT)
             {
                 nextDirection = Directions.EAST;
-                readyToRead = false;
+                readyToRead = true;
             }
             else if (keyCode == NativeKeyEvent.VC_DOWN)
             {
                 nextDirection = Directions.SOUTH;
-                readyToRead = false;
+                readyToRead = true;
             }
             else if (keyCode == NativeKeyEvent.VC_UP)
             {
                 nextDirection = Directions.NORTH;
-                readyToRead = false;
+                readyToRead = true;
             }
-            else if (keyCode == NativeKeyEvent.VC_ENTER)
-            {
-                nextDirection = Directions.WEST;
-                readyToRead = false;
-            }
+//            else if (keyCode == NativeKeyEvent.VC_ENTER)
+//            {
+//                nextDirection = Directions.WEST;
+//                readyToRead = true;
+//            }
             
             
             
