@@ -8,6 +8,8 @@ public class GlobalKeyListenerA implements NativeKeyListener
     
     public static Directions nextDirection = null;
     
+    public static boolean gamePaused = false;
+    
     @Override
     public void nativeKeyPressed(NativeKeyEvent k)
     {
@@ -18,7 +20,12 @@ public class GlobalKeyListenerA implements NativeKeyListener
             
             int keyCode = k.getKeyCode();
             
-            if (keyCode == NativeKeyEvent.VC_LEFT)
+            if (keyCode == NativeKeyEvent.VC_ESCAPE)
+            {
+                gamePaused = !gamePaused;
+                readyToRead = true;
+            }
+            else if (keyCode == NativeKeyEvent.VC_LEFT)
             {
                 nextDirection = Directions.WEST;
                 readyToRead = true;

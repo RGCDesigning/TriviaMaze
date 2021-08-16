@@ -19,4 +19,9 @@ public class GameState implements Serializable
         myGameState = theGame;
     }
     
+    public Game getGameState()
+    {
+        return myGameState;
+    }
+    
 }

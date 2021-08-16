@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /**
  * The MapNodeType enum.
  * @author r3mix
  * @version 8.14.21
  */
-public enum MapNodeType
+public enum MapNodeType implements Serializable
 {
     /**
      * Represents a clear passage way.

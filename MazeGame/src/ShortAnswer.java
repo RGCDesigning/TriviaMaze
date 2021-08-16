@@ -1,11 +1,18 @@
+import java.io.Serializable;
+
 /**
  * Short answer question object.
  * @author Mylo
  * @version 7.18.21
  */
 
-public class ShortAnswer implements Question
+public class ShortAnswer implements Question, Serializable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Stores the question.
      */

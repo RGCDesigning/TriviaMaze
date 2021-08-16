@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -7,9 +8,14 @@ import java.util.Collections;
  * @version 8.14.21
  */
 
-public class Map 
+public class Map implements Serializable
 {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * The difficulty of the game. Controls the spawn rate of doors.
      */
@@ -188,6 +194,11 @@ public class Map
         
         return myMap[theRow][theCol];
         
+    }
+    
+    public MapNode getRoom(final Coordinate theCord)
+    {
+        return getRoom(theCord.myX, theCord.myY);
     }
     
     public MapNode getRoom(final int theRow, final int theCol, final Directions theDirection)

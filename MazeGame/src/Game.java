@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.Scanner;
 
 import org.jnativehook.GlobalScreen;
@@ -11,9 +12,14 @@ import org.jnativehook.keyboard.NativeKeyListener;
  * @version 8.14.21
  */
 
-public class Game
+public class Game implements Serializable
 {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Instance of the game's map.
      */
@@ -65,6 +71,11 @@ public class Game
         return null;
     }
     
+    public boolean playerOnExit()
+    {
+        return myMap.getRoom(getPlayerPos()).getNodeType() == MapNodeType.EXIT;
+    }
+    
     public void setPlayerPos(final Coordinate theCord)
     {
         myMap.movePlayerToRoom(theCord);
@@ -82,7 +93,7 @@ public class Game
     
     public boolean movePlayer(final Directions theDirections)
     {
-        System.out.println("Moving player - " + theDirections);
+//        System.out.println("Moving player - " + theDirections);
         return myMap.movePlayer(theDirections);
     }
     

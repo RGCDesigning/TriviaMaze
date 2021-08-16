@@ -14,7 +14,7 @@ public class GameController
      * @throws IOException Thrown when reading the file from disk has failed.
      * @throws ClassNotFoundException Thrown when parsing the file has failed.
      */
-    public GameState loadGameState(final String theSaveLocation) throws IOException, ClassNotFoundException
+    public static GameState loadGameState(final String theSaveLocation) throws IOException, ClassNotFoundException
     {
         //Is this okay or should try/catch be used
         final FileInputStream file = new FileInputStream(theSaveLocation);
@@ -35,7 +35,7 @@ public class GameController
      * @param theGameState The current state of the game that will be saved.
      * @throws IOException Thrown when there is an error writing to the given location.
      */
-    public void saveGameState(final String theSaveLocation, final GameState theGameState) throws IOException
+    public static void saveGameState(final String theSaveLocation, final GameState theGameState) throws IOException
     {
         final FileOutputStream file = new FileOutputStream(theSaveLocation);
         final ObjectOutputStream out = new ObjectOutputStream(file);
@@ -44,11 +44,6 @@ public class GameController
         
         file.close();
         out.close();
-    }
-    
-    public boolean attemptMove()
-    {
-        return false;
     }
     
 }

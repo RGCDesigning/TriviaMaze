@@ -1,12 +1,19 @@
+import java.io.Serializable;
+
 /**
  * Multiple choice question object.
  * @author Mylo
  * @version 7.18.21
  */
 
-public class MultipleChoiceQuestion implements Question
+public class MultipleChoiceQuestion implements Question, Serializable
 {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Stores the choices to the question.
      */

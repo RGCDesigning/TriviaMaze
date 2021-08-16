@@ -6,6 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="F:/Documents/Java Projects/jnativehook-2.1.0.jar"/>
+	<classpathentry kind="lib" path="sqlite-jdbc-3.36.0.1.jar"/>
+	<classpathentry kind="lib" path="jnativehook-2.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

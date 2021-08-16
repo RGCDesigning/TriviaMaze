@@ -1,11 +1,18 @@
+import java.io.Serializable;
+
 /**
  * Question Stack.
  * @author Mylo
  * @version 7.18.21
  */
 
-public class QuestionStack 
+public class QuestionStack implements Serializable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * The maximum size of the stack.
      */

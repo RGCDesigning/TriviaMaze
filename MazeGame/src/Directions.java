@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public enum Directions
+public enum Directions implements Serializable
 {
     /**
      * Cardinal directions.

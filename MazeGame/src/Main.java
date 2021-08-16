@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ public class Main
      * 0 = Map Open
      * 1 = Question Open
      * 2 = Menu Open
+     * 3 = Pause Menu
      */
     public static int myScreenType = 0;
     
@@ -24,22 +26,31 @@ public class Main
     
     public static Coordinate lastPlayerPos = null;
     
+    public static boolean debugMode = true;
+    
+    public static String debugText = "Debug Enabled";
+    
     public static void main(final String[] theArgs)
     {
-        final Question testQuestion = new MultipleChoiceQuestion("This is a test question", new String[] {"These", "Are", "Test", "Answers"}, 3);
+//        final Question testQuestion = new MultipleChoiceQuestion("This is a test question", new String[] {"These", "Are", "Test", "Answers"}, 3);
+//        
+//        final Question t2 = new ShortAnswer("The answer is yes", "yes");
+//        
+//        final Question t3 = new TFQuestion("The answer is false", false);
+//        
+//        final QuestionStack testStack = new QuestionStack(100);
+//       
+//        testStack.push(testQuestion);
+//        testStack.push(t2);
+//        testStack.push(t3);
         
-        final Question t2 = new ShortAnswer("The answer is yes", "yes");
+        final QuestionStack testStack = QuestionLoader.loadFromDB("Test.db");
         
-        final Question t3 = new TFQuestion("The answer is false", false);
-        
-        final QuestionStack testStack = new QuestionStack(100);
-        testStack.push(testQuestion);
-        testStack.push(t2);
-        testStack.push(t3);
-        
-        final Game testGame = new Game(4, 6, .5, testStack);
+        final Game testGame = new Game(4, 6, .4, testStack);
         
         startGame(testGame);
+        
+        System.exit(0);
         
     }
     
@@ -68,12 +79,28 @@ public class Main
         while (playing)
         {
             
+            if (theGame.playerOnExit())
+            {
+                resetScreen();
+                
+                theGame.printBoard();
+                
+                System.out.println("YOU WIN!");
+                playing = false;
+                continue;
+            }
+            
             /**
              * Updates screen when necessary
              */
             if (updateScreen)
             {
                 resetScreen();
+                
+                if (debugMode)
+                {
+                    System.out.println("[ " + debugText + " ]");
+                }
                                 
                 if (myScreenType == 0)
                 {
@@ -91,10 +118,10 @@ public class Main
                         String answer = getUserTextInput();
                         
                         theGame.setDoor(currentInteraction.getCoordinate(), verifyAnswer(answer));
+                                                
+                        debugText = "Setting pos to " + lastPlayerPos;
                         
-//                        System.out.println("Setting pos to " + lastPlayerPos);
-//                        
-//                        theGame.setPlayerPos(lastPlayerPos);
+                        theGame.setPlayerPos(lastPlayerPos);
                         
                         myScreenType = 0;
                         
@@ -108,6 +135,12 @@ public class Main
                 {
                     
                 }
+                else if (myScreenType == 3)
+                {
+                    System.out.println("\n\t- Game Paused -\n");
+                    
+                    printMenu(new String[] { "Save Game", "Load Game", "Continue Game", "Quit Game" });
+                }
                 
                 updateScreen = false;
                 
@@ -118,6 +151,23 @@ public class Main
              */
             if (GlobalKeyListenerA.readyToRead)
             {
+                
+                if (myScreenType == 0 && GlobalKeyListenerA.gamePaused)
+                {
+                    myScreenType = 3;
+                }
+                else if (myScreenType == 3 && GlobalKeyListenerA.gamePaused == false)
+                {
+                    myScreenType = 0;
+                    
+                    updateScreen = true;
+                    clearKeyListener();
+                    continue;
+                }
+                else if ((myScreenType != 3 && myScreenType != 0) && GlobalKeyListenerA.gamePaused)
+                {
+                    GlobalKeyListenerA.gamePaused = false;
+                }
                 
                 Directions direction = GlobalKeyListenerA.nextDirection;
                 
@@ -180,10 +230,83 @@ public class Main
                 {
                     
                 }
+                else if (myScreenType == 3)
+                {
+                    if (direction == Directions.NORTH)
+                    {
+                        myCurrentlySelected--;
+                    }
+                    else if (direction == Directions.SOUTH)
+                    {
+                        myCurrentlySelected++;
+                    }
+                    else if (direction == Directions.EAST)
+                    {
+                        /**
+                         * Save Game
+                         */
+                        if (myCurrentlySelected == 0)
+                        {
+                            saveGame(theGame);
+                            GlobalKeyListenerA.gamePaused = false;
+                            
+                            debugText = "Save Successful";
+                            
+                            updateScreen = true;
+                            clearKeyListener();
+                        }
+                        /**
+                         * Load Game
+                         */
+                        else if (myCurrentlySelected == 1)
+                        {
+                            Game loadedGame = loadGame();
+                            
+                            if (loadedGame == null)
+                            {
+                                debugText = "Load Failed!";
+                                continue;
+                            }
+                            
+                            playing = false;
+                            
+                            debugText = "Load Successful";
+                            
+                            resetInit();
+                            
+                            System.out.println("Loading Game Dude");
+                            
+                            startGame(loadedGame);
+                            
+                            break;
+                            
+                        }
+                        /**
+                         * Continue Game
+                         */
+                        else if (myCurrentlySelected == 2)
+                        {
+                            GlobalKeyListenerA.gamePaused = false;
+                            
+                            updateScreen = true;
+                            clearKeyListener();
+                            
+                        }
+                        /**
+                         * Quit Game
+                         */
+                        else if (myCurrentlySelected == 3)
+                        {
+                            System.exit(0);
+                        }
+                    }
+                    
+                    debugText = "Paused Game";
+                    
+                }
                 
                 updateScreen = true;
-                GlobalKeyListenerA.readyToRead = false;
-                GlobalKeyListenerA.nextDirection = null;
+                clearKeyListener();
                 
             }
             else
@@ -204,6 +327,63 @@ public class Main
         }
         
         return false;
+    }
+    
+    public static void resetInit()
+    {
+        clearKeyListener();
+        
+        GlobalKeyListenerA.gamePaused = false;
+        
+        myCurrentlySelected = 0;
+        
+        myScreenType = 0;
+        
+        currentQuestion = null;
+        
+        currentInteraction = null;
+        
+        lastPlayerPos = null;
+        
+        debugText = "Load Successful";
+    }
+    
+    public static Game loadGame()
+    {
+        
+        Game game = null;
+        
+        try
+        {
+            GameState state = GameController.loadGameState("save.mz");
+            
+            game = state.getGameState();
+        } 
+        catch (ClassNotFoundException | IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return game;
+        
+    }
+    
+    public static boolean saveGame(final Game theGame)
+    {
+        final GameState game = new GameState(theGame);
+        
+        try
+        {
+            GameController.saveGameState("save.mz", game);
+        } 
+        catch (IOException e)
+        {
+            return false;
+        }
+        
+        return true;
+        
     }
     
     public static boolean verifyAnswer(final String theInput)
@@ -239,6 +419,12 @@ public class Main
             
         }
         
+    }
+    
+    public static void clearKeyListener()
+    {
+        GlobalKeyListenerA.readyToRead = false;
+        GlobalKeyListenerA.nextDirection = null;
     }
     
     public static void resetScreen()

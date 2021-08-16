@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  * The MapNode class.
@@ -5,9 +6,14 @@
  * @version 8.14.21
  */
 
-public class MapNode 
+public class MapNode implements Serializable
 {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /**
      * The type of MapNode.
      */
