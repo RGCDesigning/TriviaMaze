@@ -1,10 +1,6 @@
 import java.io.Serializable;
 import java.util.Scanner;
 
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
 
 /**
  * The Game class.
@@ -16,7 +12,7 @@ public class Game implements Serializable
 {
     
     /**
-     * 
+     * The default serial version.
      */
     private static final long serialVersionUID = 1L;
 
@@ -30,27 +26,23 @@ public class Game implements Serializable
      */
     private QuestionStack myQuestions;
     
-    /**
-     * The player's current X position.
-     */
-    private int myPlayerX;
-    
-    /**
-     * The player's current Y position.
-     */
-    private int myPlayerY;
     
     public Game(final int theRows, final int theCols, final double theDifficulty, final QuestionStack theQuestions)
     {
         myQuestions = theQuestions;
         myMap = new Map(theRows, theCols);
-        myPlayerX = 1;
-        myPlayerY = 1;
+//        myPlayerX = 1;
+//        myPlayerY = 1;
     }
     
-    public void setDoor(final Coordinate theDoor, final boolean isUnlocked)
+    /**
+     * Sets the door at a given coordinate to be unlocked or locked.
+     * @param theDoor The door to modify.
+     * @param theUnlockedStatus Whether or not door will be unlocked.
+     */
+    public void setDoor(final Coordinate theDoor, final boolean theUnlockedStatus)
     {
-        if (isUnlocked)
+        if (theUnlockedStatus)
         {
             myMap.unlockDoor(theDoor);
         }
@@ -60,6 +52,11 @@ public class Game implements Serializable
         }
     }
     
+    /**
+     * Gets the door from a given direction based on player position.
+     * @param theDirections
+     * @return Returns the MapNode in that direction.
+     */
     public MapNode getDoor(final Directions theDirections)
     {
         
@@ -71,43 +68,76 @@ public class Game implements Serializable
         return null;
     }
     
+    /**
+     * Checks if player is standing on an exit.
+     * @return Returns if the player is on the exit.
+     */
     public boolean playerOnExit()
     {
         return myMap.getRoom(getPlayerPos()).getNodeType() == MapNodeType.EXIT;
     }
     
+    /**
+     * Sets the player position to given coordinates.
+     * @param theCord The coordinate to set the player position to.
+     */
     public void setPlayerPos(final Coordinate theCord)
     {
         myMap.movePlayerToRoom(theCord);
     }
     
+    /**
+     * Gets the player's current position.
+     * @return Returns the coordinates of the player position.
+     */
     public Coordinate getPlayerPos()
     {
         return myMap.getPlayerPos().getCoordinate();
     }
     
+    /**
+     * Gets the next question from the question stack.
+     * @return Returns the top question.
+     */
     public Question getQuestion()
     {
         return myQuestions.pop();
     }
     
+    /**
+     * Move player in given direction.
+     * @param theDirections The direction to move the player in.
+     * @return Returns whether or not the move was successful.
+     */
     public boolean movePlayer(final Directions theDirections)
     {
 //        System.out.println("Moving player - " + theDirections);
         return myMap.movePlayer(theDirections);
     }
     
+    /**
+     * Checks whether or not a door is in a given passage based on direction and player position.
+     * @param theDirections The direction to check.
+     * @return Returns whether or not the passage in the direction is a door.
+     */
     public boolean isDoor(final Directions theDirections)
     {
         System.out.println(myMap.getPassage(getPlayerPos(), theDirections));
         return myMap.getPassage(getPlayerPos(), theDirections).getNodeType() == MapNodeType.DOOR;
     }
     
+    /**
+     * Prints the board.
+     */
     public void printBoard()
     {
         myMap.debugPrint();
     }
     
+    /**
+     * Main Game Loop
+     * OLD
+     */
     public void playGame()
     {
         boolean playing = true;
@@ -117,9 +147,16 @@ public class Game implements Serializable
         while (playing)
         {
             
+            /**
+             * This line will clear the command prompt.
+             * Requires terminal to be able to read ANSI characters.
+             */
             System.out.print("\033[H\033[2J");
             System.out.flush();
             
+            /**
+             * Prints out the board
+             */
             myMap.debugPrint();
             
             System.out.println("Input move:");
@@ -183,6 +220,9 @@ public class Game implements Serializable
             }
             
         }
+        
+        reader.close();
+        
     }
 
 }

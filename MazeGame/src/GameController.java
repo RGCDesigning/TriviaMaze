@@ -7,6 +7,11 @@ import java.io.ObjectOutputStream;
 public class GameController
 {
     
+    private GameController()
+    {
+        
+    }
+    
     /**
      * Loads the previous state of a game and returns it.
      * @param theSaveLocation The location of the GameState object that has been serialized.

@@ -12,9 +12,14 @@ public class QuestionLoader
         
     }
     
+    /**
+     * Loads the QuestionStack from a given SQLite database.
+     * @param theDBLocation The location of the database to load.
+     * @return Returns the QuestionStack created from the loaded database.
+     */
     public static QuestionStack loadFromDB(final String theDBLocation)
     {
-        SQLiteDataSource ds = new SQLiteDataSource();
+        final SQLiteDataSource ds = new SQLiteDataSource();
         
         ds.setUrl(String.format("jdbc:sqlite:%s", theDBLocation));
         
@@ -22,35 +27,35 @@ public class QuestionLoader
         
         try
         {
-            Connection con = ds.getConnection();
+            final Connection con = ds.getConnection();
             
-            Statement st = con.createStatement();
+            final Statement st = con.createStatement();
                         
-            ResultSet count = st.executeQuery("SELECT COUNT(*) FROM Questions");
+            final ResultSet count = st.executeQuery("SELECT COUNT(*) FROM Questions");
             
-            int length = count.getInt(1);
+            final int length = count.getInt(1);
             
             stack = new QuestionStack(length);
             
-            String query = "SELECT * FROM Questions";
+            final String query = "SELECT * FROM Questions";
             
-            ResultSet rs = st.executeQuery(query);
+            final ResultSet rs = st.executeQuery(query);
 
             while (rs.next())
             {                
-                int questionType = rs.getInt("type");
+                final int questionType = rs.getInt("type");
                 
                 if (questionType == 0)
                 {
-                    String question = rs.getString("question").replace("&#039;", "'").replace("&quot;", "\"");
+                    final String question = rs.getString("question").replace("&#039;", "'").replace("&quot;", "\"");
                     
-                    String choicesString = rs.getString("choices").replace("&#039;", "'").replace("&quot;", "\"");
+                    final String choicesString = rs.getString("choices").replace("&#039;", "'").replace("&quot;", "\"");
                     
-                    String[] choices = choicesString.replace("&#039;", "'").replace("&quot;", "\"").split("~");
+                    final String[] choices = choicesString.replace("&#039;", "'").replace("&quot;", "\"").split("~");
                     
-                    int answer = rs.getInt("answer");
+                    final int answer = rs.getInt("answer");
                     
-                    MultipleChoiceQuestion tempQuestion = new MultipleChoiceQuestion(question, choices, answer);
+                    final MultipleChoiceQuestion tempQuestion = new MultipleChoiceQuestion(question, choices, answer);
                     
                     stack.push(tempQuestion);
                 }
@@ -59,7 +64,7 @@ public class QuestionLoader
             
             
         } 
-        catch (SQLException e)
+        catch (final SQLException e)
         {
             e.printStackTrace();
         }

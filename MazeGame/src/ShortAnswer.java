@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ShortAnswer implements Question, Serializable
 {
     /**
-     * 
+     * The default serial version.
      */
     private static final long serialVersionUID = 1L;
 

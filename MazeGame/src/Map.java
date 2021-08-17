@@ -12,7 +12,7 @@ public class Map implements Serializable
 {
     
     /**
-     * 
+     * Default serial version.
      */
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class Map implements Serializable
     /**
      * Stores the current node the player is in.
      */
-    private MapNode playerPos;
+    private MapNode myPlayerPos;
     
     public Map(final int theRowDimensions, final int theColumnsDimensions)
     {
@@ -65,13 +65,13 @@ public class Map implements Serializable
         myMap = new MapNode[myRowBound][myColBound];
         setupMap();
         myMap[1][1].setPlayerPresent(true);
-        playerPos = myMap[1][1];
+        myPlayerPos = myMap[1][1];
     }
     
     /**
-     * 
-     * @param theRow
-     * @param theCol
+     * Translates a room position to a usable row and col for the Map class.
+     * @param theRow The row to translate.
+     * @param theCol The col to translate.
      */
     public void translatePos(final int theRow, final int theCol)
     {
@@ -79,9 +79,9 @@ public class Map implements Serializable
     }
     
     /**
-     * 
-     * @param theRow
-     * @param theCol
+     * Unlock door at a given position.
+     * @param theRow The row of the door.
+     * @param theCol The col of the door.
      */
     public void unlockDoor(final int theRow, final int theCol)
     {
@@ -95,28 +95,36 @@ public class Map implements Serializable
         
     }
     
+    /**
+     * Unlock door at a given position given coordinate.
+     * @param theCord The coordinate ot unlock.
+     */
     public void unlockDoor(final Coordinate theCord)
     {
         unlockDoor(theCord.myX, theCord.myY);
     }
     
+    /**
+     * Unlock door in the given direction.
+     * @param theDirection The direction in terms of the player's position.
+     */
     public void unlockDoor(final Directions theDirection)
     {
         if (theDirection == Directions.NORTH)
         {
-            unlockDoor(playerPos.getCoordinate().myX - 1, playerPos.getCoordinate().myY);
+            unlockDoor(myPlayerPos.getCoordinate().myX - 1, myPlayerPos.getCoordinate().myY);
         }
         else if (theDirection == Directions.SOUTH)
         {
-            unlockDoor(playerPos.getCoordinate().myX + 1, playerPos.getCoordinate().myY);
+            unlockDoor(myPlayerPos.getCoordinate().myX + 1, myPlayerPos.getCoordinate().myY);
         }
         else if (theDirection == Directions.WEST)
         {
-            unlockDoor(playerPos.getCoordinate().myX, playerPos.getCoordinate().myY - 1);
+            unlockDoor(myPlayerPos.getCoordinate().myX, myPlayerPos.getCoordinate().myY - 1);
         }
         else if (theDirection == Directions.EAST)
         {
-            unlockDoor(playerPos.getCoordinate().myX, playerPos.getCoordinate().myY + 1);
+            unlockDoor(myPlayerPos.getCoordinate().myX, myPlayerPos.getCoordinate().myY + 1);
         }
     }
     
@@ -155,39 +163,49 @@ public class Map implements Serializable
      */
     public boolean movePlayer(final Directions theDirection)
     {
-        MapNode passage = getPassage(playerPos.getCoordinate(), theDirection);
+        final MapNode passage = getPassage(myPlayerPos.getCoordinate(), theDirection);
         
         if (passage == null || passage.getNodeType() == MapNodeType.DOOR || passage.getNodeType() == MapNodeType.WALL)
         {
             return false;
         }
         
-        MapNode nextPos = getRoom(playerPos.getCoordinate(), theDirection);
+        final MapNode nextPos = getRoom(myPlayerPos.getCoordinate(), theDirection);
         
-        playerPos.setPlayerPresent(false);
+        myPlayerPos.setPlayerPresent(false);
         
         nextPos.setPlayerPresent(true);
         
-        playerPos = nextPos;
+        myPlayerPos = nextPos;
         
         return true;
         
     }
     
+    /**
+     * Sets player's position to given room.
+     * @param theCord The coordinate to set the player's position.
+     */
     public void movePlayerToRoom(final Coordinate theCord)
     {
-        playerPos.setPlayerPresent(false);
-        playerPos = getRoom(theCord.myX, theCord.myY);
-        playerPos.setPlayerPresent(true);
+        myPlayerPos.setPlayerPresent(false);
+        myPlayerPos = getRoom(theCord.myX, theCord.myY);
+        myPlayerPos.setPlayerPresent(true);
     }
     
+    /**
+     * Gets the MapNode from the given position.
+     * @param theRow The row to get.
+     * @param theCol The col to get.
+     * @return Returns the MapNode at the given position.
+     */
     public MapNode getRoom(final int theRow, final int theCol)
     {
         
         /** 
          * Maybe check if odd?
          */
-        if (theRow < 1 || theRow > myRowBound - 1 || theCol < 1 || theCol > myColBound- 1) 
+        if (theRow < 1 || theRow > myRowBound - 1 || theCol < 1 || theCol > myColBound - 1) 
         {
             return null;
         }
@@ -196,11 +214,23 @@ public class Map implements Serializable
         
     }
     
+    /**
+     * Gets the MapNode from the given coordinate.
+     * @param theCord The coordinate to get the position from.
+     * @return Returns the room from a given coordinate.
+     */
     public MapNode getRoom(final Coordinate theCord)
     {
         return getRoom(theCord.myX, theCord.myY);
     }
     
+    /**
+     * Gets the MapNode from the given direction based on the coordinate's given.
+     * @param theRow The row to base direction from.
+     * @param theCol The col to base direction from.
+     * @param theDirection The direction to look in.
+     * @return Returns the room in the given direction based on position.
+     */
     public MapNode getRoom(final int theRow, final int theCol, final Directions theDirection)
     {
         if (theRow < 1 || theRow > myRowBound - 1 || theCol < 1 || theCol > myColBound - 1)
@@ -228,6 +258,12 @@ public class Map implements Serializable
         return null;
     }
     
+    /**
+     * Gets the MapNode from the given direction based on the coordinate's given.
+     * @param theCoordinate The coordinate to base direction from.
+     * @param theDirection The direction to look in.
+     * @return Returns the room in the given direction based on the coordinate.
+     */
     public MapNode getRoom(final Coordinate theCoordinate, final Directions theDirection)
     {
         return getRoom(theCoordinate.myX, theCoordinate.myY, theDirection);
@@ -564,7 +600,7 @@ public class Map implements Serializable
      */
     public MapNode getPlayerPos()
     {
-        return playerPos;
+        return myPlayerPos;
     }
     
     /**

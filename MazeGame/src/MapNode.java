@@ -10,7 +10,7 @@ public class MapNode implements Serializable
 {
     
     /**
-     * 
+     * The default serial version.
      */
     private static final long serialVersionUID = 1L;
 
@@ -72,7 +72,8 @@ public class MapNode implements Serializable
     }
     
     /**
-     * Sets whether or not the player is on node.
+     * Set the playerPos setting.
+     * @param theSetting True or false.
      */
     protected void setPlayerPresent(final boolean theSetting)
     {

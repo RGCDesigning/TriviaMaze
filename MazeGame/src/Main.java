@@ -8,9 +8,17 @@ import org.jnativehook.NativeHookException;
 
 public class Main
 {
-    public static long myTimeout = 50;
     
-    public static int myCurrentlySelected = 0;
+    /**
+     * The timeout time between each loop.
+     */
+    protected static long myTimeout = 50;
+    
+    /**
+     * The currently selected value.
+     * Used for menus.
+     */
+    protected static int myCurrentlySelected;
     
     /**
      * 0 = Map Open
@@ -18,17 +26,32 @@ public class Main
      * 2 = Menu Open
      * 3 = Pause Menu
      */
-    public static int myScreenType = 0;
+    protected static int myScreenType;
     
-    public static Question currentQuestion = null;
+    /**
+     * The current question.
+     */
+    protected static Question currentQuestion;
     
-    public static MapNode currentInteraction = null;
+    /**
+     * The current node being interacted with.
+     */
+    protected static MapNode currentInteraction;
     
-    public static Coordinate lastPlayerPos = null;
+    /**
+     * The last position of the player.
+     */
+    protected static Coordinate lastPlayerPos;
     
-    public static boolean debugMode = true;
+    /**
+     * Controls the debug dialogue.
+     */
+    protected static boolean debugMode = true;
     
-    public static String debugText = "Debug Enabled";
+    /**
+     * The text inside the debug dialoge.
+     */
+    protected static String debugText = "Debug Enabled";
     
     public static void main(final String[] theArgs)
     {
@@ -54,18 +77,31 @@ public class Main
         
     }
     
+    /**
+     * Main Game Loop
+     * @param theGame The game to run.
+     * @return Returns whether or not to continue;
+     */
     public static boolean startGame(final Game theGame)
     {
         
+        /**
+         * Initializes game with board print.
+         */
         theGame.printBoard();
         
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        
+        /**
+         * Adds native key listener and disables constant logs in console.
+         */
+        final Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
         logger.setLevel(Level.OFF);
         
         try
         {
             GlobalScreen.registerNativeHook();
-        } catch (NativeHookException e)
+        } 
+        catch (final NativeHookException e)
         {
             e.printStackTrace();
         }
@@ -79,6 +115,9 @@ public class Main
         while (playing)
         {
             
+            /**
+             * Checks if player has won.
+             */
             if (theGame.playerOnExit())
             {
                 resetScreen();
@@ -95,6 +134,10 @@ public class Main
              */
             if (updateScreen)
             {
+                
+                /**
+                 * Wipes the screen.
+                 */
                 resetScreen();
                 
                 if (debugMode)
@@ -115,7 +158,7 @@ public class Main
                     
                     if (currentQuestion instanceof ShortAnswer)
                     {
-                        String answer = getUserTextInput();
+                        final String answer = getUserTextInput();
                         
                         theGame.setDoor(currentInteraction.getCoordinate(), verifyAnswer(answer));
                                                 
@@ -139,7 +182,7 @@ public class Main
                 {
                     System.out.println("\n\t- Game Paused -\n");
                     
-                    printMenu(new String[] { "Save Game", "Load Game", "Continue Game", "Quit Game" });
+                    printMenu(new String[] {"Save Game", "Load Game", "Continue Game", "Quit Game"});
                 }
                 
                 updateScreen = false;
@@ -169,14 +212,17 @@ public class Main
                     GlobalKeyListenerA.gamePaused = false;
                 }
                 
-                Directions direction = GlobalKeyListenerA.nextDirection;
+                final Directions direction = GlobalKeyListenerA.nextDirection;
                 
                 lastPlayerPos = theGame.getPlayerPos();
                 
                 if (myScreenType == 0)
                 {
-                    boolean successfulMove = theGame.movePlayer(direction);
+                    final boolean successfulMove = theGame.movePlayer(direction);
                     
+                    /**
+                     * If the player attempts to move passed a door, a question will be asked.
+                     */
                     if (!successfulMove && theGame.isDoor(direction))
                     {
                         currentQuestion = theGame.getQuestion();
@@ -202,6 +248,9 @@ public class Main
                         
                         if (currentQuestion instanceof MultipleChoiceQuestion)
                         {
+                            /**
+                             * Gets answer from multiple choice and verifies.
+                             */
                             answer = ((MultipleChoiceQuestion) currentQuestion).getChoices()[myCurrentlySelected];
                         }
                         else if (currentQuestion instanceof TFQuestion)
@@ -220,6 +269,10 @@ public class Main
                             continue;
                         }
                         
+                        
+                        /**
+                         * Sets the door status based on whether or not the answer is correct.
+                         */
                         theGame.setDoor(currentInteraction.getCoordinate(), verifyAnswer(answer));
                         
                         myScreenType = 0;
@@ -315,7 +368,7 @@ public class Main
                 {
                     Thread.currentThread().sleep(myTimeout);
                 } 
-                catch (InterruptedException e)
+                catch (final InterruptedException e)
                 {
                     e.printStackTrace();
                 }
@@ -329,6 +382,10 @@ public class Main
         return false;
     }
     
+    /**
+     * Resets the game to its initial conditions.
+     * This method does not reset the map.
+     */
     public static void resetInit()
     {
         clearKeyListener();
@@ -348,6 +405,10 @@ public class Main
         debugText = "Load Successful";
     }
     
+    /**
+     * Triggers a load from default save name.
+     * @return Returns the Game from the loaded state.
+     */
     public static Game loadGame()
     {
         
@@ -355,11 +416,11 @@ public class Main
         
         try
         {
-            GameState state = GameController.loadGameState("save.mz");
+            final GameState state = GameController.loadGameState("save.mz");
             
             game = state.getGameState();
         } 
-        catch (ClassNotFoundException | IOException e)
+        catch (final ClassNotFoundException | IOException e)
         {
             e.printStackTrace();
             return null;
@@ -369,6 +430,11 @@ public class Main
         
     }
     
+    /**
+     * Triggers a save game.
+     * @param theGame The game to save.
+     * @return Returns whether or not the save was successful.
+     */
     public static boolean saveGame(final Game theGame)
     {
         final GameState game = new GameState(theGame);
@@ -377,7 +443,7 @@ public class Main
         {
             GameController.saveGameState("save.mz", game);
         } 
-        catch (IOException e)
+        catch (final IOException e)
         {
             return false;
         }
@@ -386,6 +452,11 @@ public class Main
         
     }
     
+    /**
+     * Verifies the answer using currentQuestion and theInput String.
+     * @param theInput The String to test.
+     * @return Returns whether or not theInput was the correct answer.
+     */
     public static boolean verifyAnswer(final String theInput)
     {
         
@@ -397,9 +468,13 @@ public class Main
         return false;
     }
     
+    /**
+     * Interrupts to get user input.
+     * @return Returns the String that was input.
+     */
     public static String getUserTextInput()
     {
-        Scanner reader = new Scanner(System.in);
+        final Scanner reader = new Scanner(System.in);
         
         while (true)
         {
@@ -408,7 +483,7 @@ public class Main
                 continue;
             }
             
-            String input = reader.nextLine();
+            final String input = reader.nextLine();
             
             if (input != null && input.length() > 0)
             {
@@ -421,18 +496,30 @@ public class Main
         
     }
     
+    /**
+     * Clears the key listener.
+     * This method does not fully reset the key listener.
+     */
     public static void clearKeyListener()
     {
         GlobalKeyListenerA.readyToRead = false;
         GlobalKeyListenerA.nextDirection = null;
     }
     
+    /**
+     * Resets the terminal screen.
+     */
     public static void resetScreen()
     {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
     
+    /**
+     * Base method for printing a menu.
+     * This method does not control verification.
+     * @param theMenuItems The items to print.
+     */
     public static void printMenu(final String[] theMenuItems)
     {
         if (myCurrentlySelected < 0)
@@ -458,6 +545,10 @@ public class Main
         
     }
     
+    /**
+     * Print a question menu.
+     * @param theQuestion The question to ask.
+     */
     public static void printQuestion(final Question theQuestion)
     {
         
@@ -465,31 +556,43 @@ public class Main
         
         if (theQuestion instanceof MultipleChoiceQuestion)
         {
-            printMultiChoice((MultipleChoiceQuestion)theQuestion);
+            printMultiChoice((MultipleChoiceQuestion) theQuestion);
         }
         else if (theQuestion instanceof ShortAnswer)
         {
-            printShortAnswer((ShortAnswer)theQuestion);
+            printShortAnswer((ShortAnswer) theQuestion);
         }
         else if (theQuestion instanceof TFQuestion)
         {
-            printTFQuestion((TFQuestion)theQuestion);
+            printTFQuestion((TFQuestion) theQuestion);
         }
     }
     
+    /**
+     * Print the menu for a multiple choice question.
+     * @param theQuestion The question to ask.
+     */
     private static void printMultiChoice(final MultipleChoiceQuestion theQuestion)
     {
         printMenu(theQuestion.getChoices());
     }
     
+    /**
+     * Prints menu for a short answer question.
+     * @param theQuestion The question to ask.
+     */
     private static void printShortAnswer(final ShortAnswer theQuestion)
     {
         System.out.print("\t->");
     }
     
+    /**
+     * Print the menu for a true false question.
+     * @param theQuestion The Question to ask.
+     */
     private static void printTFQuestion(final TFQuestion theQuestion)
     {
-        printMenu(new String[] { "True", "False" });
+        printMenu(new String[] {"True", "False"});
     }
     
 }

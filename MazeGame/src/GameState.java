@@ -4,7 +4,7 @@ public class GameState implements Serializable
 {
 
     /**
-     * 
+     * Default serial version.
      */
     private static final long serialVersionUID = 1L;
     
@@ -19,6 +19,10 @@ public class GameState implements Serializable
         myGameState = theGame;
     }
     
+    /**
+     * Gets the Game from the game state.
+     * @return Returns the Game from the game state.
+     */
     public Game getGameState()
     {
         return myGameState;

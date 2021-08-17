@@ -4,21 +4,31 @@ import org.jnativehook.keyboard.NativeKeyListener;
 public class GlobalKeyListenerA implements NativeKeyListener
 {
 
-    public static boolean readyToRead = false;
+    /**
+     * Whether or not a key is ready to be read.
+     * If true, the Main class main method knows to read the key stored.
+     */
+    protected static boolean readyToRead;
     
-    public static Directions nextDirection = null;
+    /**
+     * Stores the direction that was input.
+     */
+    protected static Directions nextDirection;
     
-    public static boolean gamePaused = false;
+    /**
+     * Stores whether or not the game attempted to change states to a paused state.
+     */
+    protected static boolean gamePaused;
     
     @Override
-    public void nativeKeyPressed(NativeKeyEvent k)
+    public void nativeKeyPressed(final NativeKeyEvent theKey)
     {
         
         if (!readyToRead && nextDirection == null)
         {
 //            String key = k.getKeyText(k.getKeyCode());
             
-            int keyCode = k.getKeyCode();
+            final int keyCode = theKey.getKeyCode();
             
             if (keyCode == NativeKeyEvent.VC_ESCAPE)
             {
@@ -62,16 +72,14 @@ public class GlobalKeyListenerA implements NativeKeyListener
     }
 
     @Override
-    public void nativeKeyReleased(NativeKeyEvent k)
+    public void nativeKeyReleased(final NativeKeyEvent theKey)
     {
-//        System.out.println("Key Released: " + NativeKeyEvent.getKeyText(k.getKeyCode()));
         
     }
 
     @Override
-    public void nativeKeyTyped(NativeKeyEvent k)
+    public void nativeKeyTyped(final NativeKeyEvent theKey)
     {
-        // TODO Auto-generated method stub
         
     }
     

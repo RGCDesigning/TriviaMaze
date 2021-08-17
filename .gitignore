@@ -1,1 +1,5 @@
 Driver.java
+.classpath
+/PythonWriteToSQL/venv/
+/PythonWriteToSQL/.idea/
+/PythonWriteToSQL/__pycache__/
