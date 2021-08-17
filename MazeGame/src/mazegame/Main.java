@@ -95,7 +95,7 @@ public class Main
         
         mainMenu();
         
-        final Game testGame = new Game(myCurrentlySelectedRows, myCurrentlySelectedCols, .4, testStack);
+        final Game testGame = new Game(myCurrentlySelectedRows, myCurrentlySelectedCols, .4, testStack, myCheatModeEnabled);
         
         startGame(testGame);
         

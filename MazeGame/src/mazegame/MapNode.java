@@ -30,6 +30,11 @@ public class MapNode implements Serializable
      */
     private boolean isPlayerPos;
     
+    /**
+     * Stores whether or not this node is visible for the FOW.
+     */
+    private boolean isVisible;
+    
     MapNode(final MapNodeType theNodeType, final Coordinate theCoordinate)
     {
         myNodeType = theNodeType;
@@ -81,12 +86,25 @@ public class MapNode implements Serializable
         isPlayerPos = theSetting;
     }
     
+    /**
+     * Sets whether or not the given node was viewed.
+     * @param theViewedSetting Whether or not the node was viewed.
+     */
+    protected void setView(final boolean theViewedSetting)
+    {
+        isVisible = theViewedSetting;
+    }
+    
     @Override
     public String toString()
     {
         if (isPlayerPos)
         {
             return "&" + "";
+        }
+        else if (!isVisible)
+        {
+            return " " + "";
         }
         return myNodeType.getSymbol() + "";
     }

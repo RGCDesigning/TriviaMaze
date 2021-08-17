@@ -28,6 +28,16 @@ public class Map implements Serializable
     private static final double DOORCHANCE = 0.5;
     
     /**
+     * The view distance.
+     */
+    public static int VIEW = 2;
+    
+    /**
+     * The FOW setting.
+     */
+    private static boolean isFOW;
+    
+    /**
      * The rows in the map.
      */
     private final int myRows;
@@ -67,6 +77,44 @@ public class Map implements Serializable
         setupMap();
         myMap[1][1].setPlayerPresent(true);
         myPlayerPos = myMap[1][1];
+        
+        discover(myPlayerPos.getCoordinate());
+    }
+    
+    public Map(final int theRowDimensions, final int theColumnsDimensions, final boolean theCheatsEnabled)
+    {
+        System.out.println("Map gen with cheats: " + theCheatsEnabled);
+        
+        isFOW = theCheatsEnabled;
+        myRows = theRowDimensions;
+        myCols = theColumnsDimensions;
+        myRowBound = theRowDimensions * 2 + 1;
+        myColBound = theColumnsDimensions * 2 + 1;
+        myMap = new MapNode[myRowBound][myColBound];
+        setupMap();
+        myMap[1][1].setPlayerPresent(true);
+        myPlayerPos = myMap[1][1];
+        
+        discover(myPlayerPos.getCoordinate());
+    }
+    
+    /**
+     * 
+     * @param theCord
+     */
+    public void discover(final Coordinate theCord)
+    {
+        for (int row = -1 * VIEW; row < VIEW + 1; row++)
+        {
+            for (int col = -1 * VIEW; col < VIEW + 1; col++)
+            {
+                if (theCord.myX + row > 0 && theCord.myY + col > 0 && theCord.myX + row < myRowBound && theCord.myY + col < myColBound)
+                {
+//                    System.out.println("\tDiscovering : (" + row + ", " + col + ")");
+                    myMap[theCord.myX + row][theCord.myY + col].setView(true);
+                }
+            }
+        }
     }
     
     /**
@@ -179,6 +227,8 @@ public class Map implements Serializable
         
         myPlayerPos = nextPos;
         
+        discover(myPlayerPos.getCoordinate());
+        
         return true;
         
     }
@@ -192,6 +242,7 @@ public class Map implements Serializable
         myPlayerPos.setPlayerPresent(false);
         myPlayerPos = getRoom(theCord.myX, theCord.myY);
         myPlayerPos.setPlayerPresent(true);
+        discover(myPlayerPos.getCoordinate());
     }
     
     /**
@@ -355,6 +406,17 @@ public class Map implements Serializable
             for (int j = 0; j < myColBound; j++)
             {
                 myMap[i][j] = new MapNode(MapNodeType.WALL, new Coordinate(i, j));
+                
+                if ((i == 0 || i == myRowBound-1) || (j == 0 || j == myColBound-1))
+                {
+                    myMap[i][j].setView(true);
+                }
+                
+                if (isFOW)
+                {
+                    myMap[i][j].setView(true);
+                }
+                
             }
         }
     }

@@ -35,6 +35,14 @@ public class Game implements Serializable
 //        myPlayerY = 1;
     }
     
+    public Game(final int theRows, final int theCols, final double theDifficulty, final QuestionStack theQuestions, final boolean theCheatEnabled)
+    {
+        myQuestions = theQuestions;
+        myMap = new Map(theRows, theCols, theCheatEnabled);
+//        myPlayerX = 1;
+//        myPlayerY = 1;
+    }
+    
     /**
      * Sets the door at a given coordinate to be unlocked or locked.
      * @param theDoor The door to modify.
