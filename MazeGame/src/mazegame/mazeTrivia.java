@@ -1,3 +1,4 @@
+package mazegame;
 
 import java.util.Scanner;
 

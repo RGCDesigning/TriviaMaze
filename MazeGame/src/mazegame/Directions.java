@@ -1,3 +1,4 @@
+package mazegame;
 import java.io.Serializable;
 
 public enum Directions implements Serializable

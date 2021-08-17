@@ -1,29 +1,31 @@
+package mazegame;
 import java.io.Serializable;
 
 /**
- * Short answer question object.
+ * True false question object.
  * @author Mylo
  * @version 7.18.21
  */
 
-public class ShortAnswer implements Question, Serializable
+public class TFQuestion implements Question, Serializable
 {
+
     /**
      * The default serial version.
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Stores the question.
+     * Stores the Question.
      */
     private String myQuestion;
     
     /**
-     * Stores the answer.
+     * Stores the answer to the question as a boolean.
      */
-    private String myAnswer;
+    private boolean myAnswer; 
     
-    public ShortAnswer(final String theQuestion, final String theAnswer)
+    public TFQuestion(final String theQuestion, final boolean theAnswer)
     {
         myQuestion = theQuestion;
         myAnswer = theAnswer;
@@ -34,10 +36,9 @@ public class ShortAnswer implements Question, Serializable
      * @param theInput The answer to verify.
      * @return Returns whether or not the correct answer was input.
      */
-    boolean verifyAnswer(final String theInput)
+    boolean verifyAnswer(final boolean theInput)
     {
-        //one line return
-        if (theInput.equals(myAnswer))
+        if (theInput == myAnswer)
         {
             return true;
         }
@@ -53,7 +54,11 @@ public class ShortAnswer implements Question, Serializable
     @Override
     public String getAnswer() 
     {
-        return myAnswer;
+        if (myAnswer)
+        {
+            return "True";
+        }
+        return "False";
     }
     
     @Override
@@ -61,5 +66,5 @@ public class ShortAnswer implements Question, Serializable
     {
         return myQuestion + " \n\t" + myAnswer;
     }
-    
+
 }

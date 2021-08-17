@@ -1,3 +1,4 @@
+package mazegame;
 
 public class test 
 {

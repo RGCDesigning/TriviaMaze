@@ -1,3 +1,4 @@
+package mazegame;
 /**
  * Question interface.
  * @author Mylo

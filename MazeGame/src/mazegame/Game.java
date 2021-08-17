@@ -1,5 +1,5 @@
+package mazegame;
 import java.io.Serializable;
-import java.util.Scanner;
 
 
 /**
@@ -138,91 +138,91 @@ public class Game implements Serializable
      * Main Game Loop
      * OLD
      */
-    public void playGame()
-    {
-        boolean playing = true;
-        
-        final Scanner reader = new Scanner(System.in);
-        
-        while (playing)
-        {
-            
-            /**
-             * This line will clear the command prompt.
-             * Requires terminal to be able to read ANSI characters.
-             */
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-            
-            /**
-             * Prints out the board
-             */
-            myMap.debugPrint();
-            
-            System.out.println("Input move:");
-            
-            final String[] input = reader.nextLine().split(" ");
-
-            for (int i = 1; i < input.length; i++)
-            {
-                input[i] = input[i].toLowerCase();
-            }
-            
-            final String command = input[0].toLowerCase();
-            
-            final int modifiers = input.length - 1;
-            
-            if (command.contains("quit"))
-            {
-                playing = false;
-            }
-            else if (command.contains("move") && modifiers == 1)
-            {
-                if (input[1].contains("up"))
-                {
-                    myMap.movePlayer(Directions.NORTH);
-                }
-                else if (input[1].contains("down"))
-                {
-                    myMap.movePlayer(Directions.SOUTH);
-                }
-                else if (input[1].contains("left"))
-                {
-                    myMap.movePlayer(Directions.WEST);
-                }
-                else if (input[1].contains("right"))
-                {
-                    myMap.movePlayer(Directions.EAST);
-                }
-            }
-            else if (command.contains("unlock") && modifiers == 1)
-            {
-                if (input[1].contains("up"))
-                {
-                    myMap.unlockDoor(Directions.NORTH);
-                }
-                else if (input[1].contains("down"))
-                {
-                    myMap.unlockDoor(Directions.SOUTH);
-                }
-                else if (input[1].contains("left"))
-                {
-                    myMap.unlockDoor(Directions.WEST);
-                }
-                else if (input[1].contains("right"))
-                {
-                    myMap.unlockDoor(Directions.EAST);
-                }
-            }
-            else
-            {
-                System.out.println("Invalid move!");
-            }
-            
-        }
-        
-        reader.close();
-        
-    }
+//    public void playGame()
+//    {
+//        boolean playing = true;
+//        
+//        final Scanner reader = new Scanner(System.in);
+//        
+//        while (playing)
+//        {
+//            
+//            /**
+//             * This line will clear the command prompt.
+//             * Requires terminal to be able to read ANSI characters.
+//             */
+//            System.out.print("\033[H\033[2J");
+//            System.out.flush();
+//            
+//            /**
+//             * Prints out the board
+//             */
+//            myMap.debugPrint();
+//            
+//            System.out.println("Input move:");
+//            
+//            final String[] input = reader.nextLine().split(" ");
+//
+//            for (int i = 1; i < input.length; i++)
+//            {
+//                input[i] = input[i].toLowerCase();
+//            }
+//            
+//            final String command = input[0].toLowerCase();
+//            
+//            final int modifiers = input.length - 1;
+//            
+//            if (command.contains("quit"))
+//            {
+//                playing = false;
+//            }
+//            else if (command.contains("move") && modifiers == 1)
+//            {
+//                if (input[1].contains("up"))
+//                {
+//                    myMap.movePlayer(Directions.NORTH);
+//                }
+//                else if (input[1].contains("down"))
+//                {
+//                    myMap.movePlayer(Directions.SOUTH);
+//                }
+//                else if (input[1].contains("left"))
+//                {
+//                    myMap.movePlayer(Directions.WEST);
+//                }
+//                else if (input[1].contains("right"))
+//                {
+//                    myMap.movePlayer(Directions.EAST);
+//                }
+//            }
+//            else if (command.contains("unlock") && modifiers == 1)
+//            {
+//                if (input[1].contains("up"))
+//                {
+//                    myMap.unlockDoor(Directions.NORTH);
+//                }
+//                else if (input[1].contains("down"))
+//                {
+//                    myMap.unlockDoor(Directions.SOUTH);
+//                }
+//                else if (input[1].contains("left"))
+//                {
+//                    myMap.unlockDoor(Directions.WEST);
+//                }
+//                else if (input[1].contains("right"))
+//                {
+//                    myMap.unlockDoor(Directions.EAST);
+//                }
+//            }
+//            else
+//            {
+//                System.out.println("Invalid move!");
+//            }
+//            
+//        }
+//        
+//        reader.close();
+//        
+//    }
 
 }
