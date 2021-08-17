@@ -1,5 +1,7 @@
 package mazegame;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,12 +24,33 @@ public class Main
     protected static int myCurrentlySelected;
     
     /**
+     * The currently selected DB.
+     */
+    protected static int myCurrentlySelectedDB;
+    
+    /**
+     * The currently selected rows.
+     */
+    protected static int myCurrentlySelectedRows = 4;
+    
+    /**
+     * The currently selected cols.
+     */
+    protected static int myCurrentlySelectedCols = 4;
+    
+    /**
+     * Whether or not cheat mode is enabled.
+     * Cheat mode highlights correct answer.
+     */
+    protected static boolean myCheatModeEnabled;
+    
+    /**
      * 0 = Map Open
      * 1 = Question Open
      * 2 = Menu Open
      * 3 = Pause Menu
      */
-    protected static int myScreenType;
+    protected static int myScreenType = 0;
     
     /**
      * The current question.
@@ -70,11 +93,139 @@ public class Main
         
         final QuestionStack testStack = QuestionLoader.loadFromDB("Test.db");
         
-        final Game testGame = new Game(4, 6, .4, testStack);
+        mainMenu();
+        
+        final Game testGame = new Game(myCurrentlySelectedRows, myCurrentlySelectedCols, .4, testStack);
         
         startGame(testGame);
         
         System.exit(0);
+        
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public static boolean mainMenu()
+    {
+        /**
+         * Adds native key listener and disables constant logs in console.
+         */
+        final Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+        
+        try
+        {
+            GlobalScreen.registerNativeHook();
+        } 
+        catch (final NativeHookException e)
+        {
+            e.printStackTrace();
+        }
+        
+        GlobalScreen.addNativeKeyListener(new GlobalKeyListenerA());
+        
+        final ArrayList<String> databases = QuestionLoader.getDBInDirectory(new File("."));
+        
+        boolean running = true;
+        boolean updateScreen = true;
+        
+        while (running)
+        {
+            
+            if (updateScreen)
+            {
+                resetScreen();
+                
+                System.out.println("\n\t- Trivia Maze Game -\n");
+                printMenu(new String[] {"Maze Rows : " + myCurrentlySelectedRows,
+                                        "Maze Cols : " + myCurrentlySelectedCols,
+                                        "Cheats Enabled : " + myCheatModeEnabled,
+                                        "Question DB : " + databases.get(myCurrentlySelectedDB),
+                                        "Start Game"});
+                
+                updateScreen = false;
+            }
+            
+            if (GlobalKeyListenerA.readyToRead)
+            {
+                final Directions input = GlobalKeyListenerA.nextDirection;
+                
+                if (input == Directions.NORTH)
+                {
+                    myCurrentlySelected--;
+                }
+                else if (input == Directions.SOUTH)
+                {
+                    myCurrentlySelected++;
+                }
+                else if (input == Directions.EAST)
+                {
+                    if (myCurrentlySelected == 0 && myCurrentlySelectedRows < 100) //Rows
+                    {
+                        myCurrentlySelectedRows++;
+                    }
+                    else if (myCurrentlySelected == 1 && myCurrentlySelectedCols < 100) //Columns
+                    {
+                        myCurrentlySelectedCols++;
+                    }
+                    else if (myCurrentlySelected == 2) //Cheats
+                    {
+                        myCheatModeEnabled = !myCheatModeEnabled;
+                    }
+                    else if (myCurrentlySelected == 3 && myCurrentlySelectedDB < databases.size() - 1) //DB
+                    {
+                        myCurrentlySelectedDB++;
+                    }
+                    else if (myCurrentlySelected == 4) //Start Game
+                    {
+                        running = false;
+                        break;
+                    }
+                }
+                else if (input == Directions.WEST)
+                {
+                    if (myCurrentlySelected == 0 && myCurrentlySelectedRows > 4) //Rows
+                    {
+                        myCurrentlySelectedRows--;
+                    }
+                    else if (myCurrentlySelected == 1 && myCurrentlySelectedCols > 4) //Columns
+                    {
+                        myCurrentlySelectedCols--;
+                    }
+                    else if (myCurrentlySelected == 2) //Cheats
+                    {
+                        myCheatModeEnabled = !myCheatModeEnabled;
+                    }
+                    else if (myCurrentlySelected == 3 && myCurrentlySelectedDB > 0) //DB
+                    {
+                        myCurrentlySelectedDB--;
+                    }
+                }
+                
+                updateScreen = true;
+                clearKeyListener();
+                
+            }
+            else
+            {
+                try
+                {
+                    Thread.sleep(myTimeout);
+                } 
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            
+        }
+        
+        resetInit();
+        clearKeyListener();
+        
+        return true;
         
     }
     
@@ -282,7 +433,14 @@ public class Main
                 }
                 else if (myScreenType == 2)
                 {
-                    
+                    if (direction == Directions.NORTH)
+                    {
+                        myCurrentlySelected--;
+                    }
+                    else if (direction == Directions.SOUTH)
+                    {
+                        myCurrentlySelected++;
+                    }
                 }
                 else if (myScreenType == 3)
                 {

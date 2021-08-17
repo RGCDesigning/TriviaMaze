@@ -1,15 +1,49 @@
 package mazegame;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.sqlite.SQLiteDataSource;
 
 public class QuestionLoader 
 {
+
     private QuestionLoader()
     {
+        
+    }
+    
+    /**
+     * Gets all DB files from directory.
+     * @param theDirectory The directory to look in.
+     * @return Returns all DB files.
+     */
+    public static ArrayList<String> getDBInDirectory(final File theDirectory)
+    {
+        
+        final ArrayList<String> paths = new ArrayList<String>(); 
+                
+        for (final File f : theDirectory.listFiles())
+        {
+            if (f.isDirectory())
+            {
+                paths.addAll(getDBInDirectory(f));
+            }
+            else
+            {
+                final int lastIndex = f.toString().lastIndexOf('.');
+                
+                if (lastIndex > 0 && f.toString().substring(lastIndex + 1).equals("db"))
+                {
+                    paths.add(f.toString());
+                }
+            }
+        }
+        
+        return paths;
         
     }
     
